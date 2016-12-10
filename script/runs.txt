@@ -1,0 +1,6 @@
+
+12.11.2016: study PH offset (1st, 2nd, rd)
+D1020-gaincal.dat
+run13.out  D1020  large Vcal 100  4 pixels: 20.30 21.30 20.31 21.31
+run17.out  D1020  large Vcal 100  4 pixels: 20.30 21.30 20.31 21.31
+

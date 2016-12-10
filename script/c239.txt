@@ -1,0 +1,63 @@
+
+Dec 24  2012 bt05r007802
+
+  1       Vdig  11
+  2       Vana  81
+  3        Vsf  30
+  4      Vcomp  12
+  7     VwllPr  60
+  9     VwllSh  60
+ 10    VhldDel 252
+ 11      Vtrim  55
+ 12   VthrComp  64
+ 13 VIBias_Bus  20
+ 14   Vbias_sf  14
+ 15  VoffsetOp  50
+ 17  VOffsetR0 140
+ 18       VIon  45
+ 19  VIbias_PH 100
+ 20  Ibias_DAC  70
+ 22    VIColOr 100
+ 25       Vcal 200
+ 26     CalDel 132
+253    CtrlReg   0
+254        WBC 116
+
+
+Dec 29  2012 bt05r007972
+
+  1       Vdig  12
+  2       Vana  83
+  3        Vsf  30
+  4      Vcomp  12
+  7     VwllPr  60
+  9     VwllSh  60
+ 10    VhldDel 252
+ 11      Vtrim  50
+ 12   VthrComp  67
+ 13 VIBias_Bus  20
+ 14   Vbias_sf  14
+ 15  VoffsetOp  50
+ 17  VOffsetR0 140
+ 18       VIon  45
+ 19  VIbias_PH 100
+ 20  Ibias_DAC  70
+ 22    VIColOr 100
+ 25       Vcal 200
+ 26     CalDel 130
+253    CtrlReg   0
+254        WBC 116
+
+
+Fr 26.2.2015
+irradiated back from CERN
+TB 21
+cold box
+chiller -18
+bias -200
+current 35 uA
+chip works
+
+trim 30 -> get 26
+trim 36 -> get 30
+trim 40 -> get 

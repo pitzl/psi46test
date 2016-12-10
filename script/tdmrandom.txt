@@ -1,0 +1,58 @@
+
+# take random beam data with module
+
+s4017
+subvthr4-4017
+pixt 13 46 39 11
+pixt  1  5  5  7
+pixt  2  4 45  7
+pixt 15  0 46  7
+
+or
+
+s4022 (trim32-tb)
+subvthr4
+pixt  5  5 67 11
+pixt 14 13 27  7
+dac 12 70 7  against noise bursts
+dac 13 66    against wrong row address
+
+o2r -m 4022 run1421.out
+rlc run.root
+.x hot.C
+allon
+
+ctl 0 # for small Vcal gain cal
+
+#wbc 20 # faster, for random trigger
+#wbc 160 # for large events does not work
+wbc 150 # for large events
+
+#trgsel 2048  # ext
+#trgdel  78  # 78 for WBC 100 in TB22 with Calice finger scint
+
+pgset 0 b100010  0  pg_trg pg_sync. (delay zero = end of pgset)
+
+allon
+
+flush
+
+modtd 400  # trigger f = 40 MHz / period
+#modtd 2000  # for direct rays
+
+mask
+trgsel 4 # internal default
+
+invalid col row 10 80 in ROC 14
+invalid col row 14 80 in ROC 14
+invalid col row 8 80 in ROC 13
+invalid col row 0 80 in ROC 10
+invalid col row 2 80 in ROC 10
+invalid col row 10 80 in ROC 10
+invalid col row 44 80 in ROC 10
+invalid col row 50 80 in ROC 10
+invalid col row 8 80 in ROC 13
+invalid col row 0 80 in ROC 10
+invalid col row 16 80 in ROC 11
+invalid col row 26 80 in ROC 11
+invalid col row 38 80 in ROC 11

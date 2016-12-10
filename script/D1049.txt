@@ -1,0 +1,70 @@
+
+Sun 13.11.2016
+trim and tune L1 module 1049
+
+bias -150V: 0.3 uA initially
+
+optiamod 24
+modcaldel 22 33
+modmap 20
+       no dead pixels
+
+modvthrcomp 48
+modcaldel 22 33
+
+modvtrim 48
+modtrimscale 48
+modcaldel 22 33
+
+modtrimstep 48
+modtrimstep 48
+modtrimstep 48
+modmap 20
+
+ROC  0  VthrComp   99
+ROC  1  VthrComp   99
+ROC  2  VthrComp  110
+ROC  3  VthrComp  109
+ROC  4  VthrComp  109
+ROC  5  VthrComp  114
+ROC  6  VthrComp  104
+ROC  7  VthrComp  102
+ROC  8  VthrComp  110
+ROC  9  VthrComp   95
+ROC 10  VthrComp  110
+ROC 11  VthrComp  105
+ROC 12  VthrComp  109
+ROC 13  VthrComp   99
+ROC 14  VthrComp  108
+ROC 15  VthrComp  108
+module valid thresholds 66560
+  min thr 43 at ROC 5 col  9 row 35
+  max thr 60 at ROC  4 col 38 row 60
+  mean thr 49.9778
+  thr rms  2.09411
+
+tdmr (check noise)
+dac 12 95 0 (harder threshold)
+for ROC 0, 2, 6, 7, 15
+
+ 0  VthrComp	   93
+ 1  VthrComp	   99
+ 2  VthrComp	  108
+ 3  VthrComp	  109
+ 4  VthrComp	  109
+ 5  VthrComp	  114
+ 6  VthrComp	  102
+ 7  VthrComp	   99
+ 8  VthrComp	  110
+ 9  VthrComp	   95
+10  VthrComp	  110
+11  VthrComp	  105
+12  VthrComp	  109
+13  VthrComp	   99
+14  VthrComp	  108
+15  VthrComp	  103
+
+
+modtune 22 33
+wdac trim48
+wtrim trim48

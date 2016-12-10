@@ -1,0 +1,68 @@
+
+Mon 14.11.2016
+L1 module 1024 from ETH: class C because of BB defects
+
+bias -150 V: 0.9 uA
+
+optiamod 24
+modcaldel 22 33
+modmap 20: 3 dead pixels
+
+modvthrcomp 48
+ROC  0 VthrComp 100
+ROC  1 VthrComp 100
+ROC  2 VthrComp 110
+ROC  3 VthrComp 112
+ROC  4 VthrComp 104
+ROC  5 VthrComp 100
+ROC  6 VthrComp  96
+ROC  7 VthrComp 110
+ROC  8 VthrComp 110
+ROC  9 VthrComp 110
+ROC 10 VthrComp 103
+ROC 11 VthrComp  96
+ROC 12 VthrComp 106
+ROC 13 VthrComp 110
+ROC 14 VthrComp 110
+ROC 15 VthrComp 110
+
+modcaldel 22 33
+
+modvtrim 48
+ROC  0  Vtrim  135
+ROC  1  Vtrim  137
+ROC  2  Vtrim  153
+ROC  3  Vtrim  153
+ROC  4  Vtrim  145
+ROC  5  Vtrim  141
+ROC  6  Vtrim  105
+ROC  7  Vtrim  147
+ROC  8  Vtrim  151
+ROC  9  Vtrim  137
+ROC 10  Vtrim  133
+ROC 11  Vtrim  137
+ROC 12  Vtrim  115
+ROC 13  Vtrim  131
+ROC 14  Vtrim  113
+ROC 15  Vtrim  153
+
+modtrimscale 48
+
+modcaldel 22 33
+
+modtrimstep 48
+modtrimstep 48
+modtrimstep 48
+
+modmap 20
+
+tdmr
+
+modtune 22 33
+
+wdac trim48
+wtrim trim48
+
+modcal
+
+modbb: 531 defects, ROC 0 outer edge, ROC 15 outer corner
