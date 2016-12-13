@@ -6,8 +6,12 @@ psi46test
 =========
 
 code for testing CMS pixel digital ROCs and modules with a DTB.
+
 based on https://github.com/psi46/psi46test (ROC testing)
+
 extended with ROOT and for module testing
+
+see also https://github.com/clseitz/Psi46testDesy
 
 Prerequisites:
 --------------
