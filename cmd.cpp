@@ -3044,11 +3044,11 @@ CMD_PROC( tbmscant )
 	  tb.Trigger_Select(512); // start GEN_DIR trigger generator
 	  tb.Flush();
 
-	  unsigned int nev[nChannels] = { };
+	  unsigned int nev[8] = { };
 	  unsigned int ndq = 0;
 	  unsigned int got = 0;
 	  unsigned int npx = 0;
-	  unsigned int nrr[nChannels] = { };
+	  unsigned int nrr[8] = { };
 
 	  uint32_t trl = 0; // need to remember from previous daq_read
 
@@ -4190,16 +4190,16 @@ CMD_PROC( modtd ) // module take data (trigger f = 40 MHz / period)
   fname << "run" << run << "B.out";
   ofstream outFileB( fname.str().c_str() );
 
-  unsigned int nev[nChannels] = {  };
+  unsigned int nev[8] = {  };
   unsigned int ndq = 0;
   unsigned int got = 0;
   unsigned int rst = 0;
   unsigned int npx = 0;
-  unsigned int nrr[nChannels] = {  };
-  unsigned int nth[nChannels] = {  }; // TBM headers
-  unsigned int nrh[nChannels] = {  }; // ROC headers
-  unsigned int ntt[nChannels] = {  }; // TBM trailers
-  unsigned int nfl[nChannels] = {  }; // filled events
+  unsigned int nrr[8] = {  };
+  unsigned int nth[8] = {  }; // TBM headers
+  unsigned int nrh[8] = {  }; // ROC headers
+  unsigned int ntt[8] = {  }; // TBM trailers
+  unsigned int nfl[8] = {  }; // filled events
 
   int PX[16] = {  };
   int ER[16] = {  };
@@ -4286,7 +4286,7 @@ CMD_PROC( modtd ) // module take data (trigger f = 40 MHz / period)
 
     ++ndq;
 
-    vector < uint16_t > data[nChannels];
+    vector < uint16_t > data[8];
     uint32_t remaining = 0;
 
     for( int ch = 0; ch < nChannels; ++ch ) {
@@ -6723,11 +6723,11 @@ CMD_PROC( fire2 ) // fire2 col row (nTrig) [2-row correlation]
   bool even = 1;
 
   int evt = 0;
-  int cnt[nChannels] = { 0 };
-  int phsum[nChannels] = { 0 };
-  int phsu2[nChannels] = { 0 };
-  double vcsum[nChannels] = { 0 };
-  int php[nChannels] = { 0 };
+  int cnt[8] = { 0 };
+  int phsum[8] = { 0 };
+  int phsu2[8] = { 0 };
+  double vcsum[8] = { 0 };
+  int php[8] = { 0 };
   int n2 = 0;
   int ppsum = 0;
 
@@ -7979,7 +7979,7 @@ int GetEff( int &n01, int &n50, int &n99 )
   uint8_t dacstrt = strt;
   uint8_t dacstop = stop;
 
-  vector < uint16_t > data[nChannels];
+  vector < uint16_t > data[8];
   for( int ch = 0; ch < nChannels; ++ch )
     data[ch].reserve( nstp * mTrig * 4160 * 28 ); // 2 TBM head + 8 ROC head + 8*2 pix + 2 TBM trail
 
@@ -8914,7 +8914,7 @@ void ModThrMap( int strt, int stop, int step, int nTrig, int xtlk, int cals )
        << " in " << nstp << " steps of " << int ( step )
        << endl;
 
-  vector < uint16_t > data[nChannels];
+  vector < uint16_t > data[8];
   for( int ch = 0; ch < nChannels; ++ch )
     data[ch].reserve( nstp * nTrig * 4160 * 28 ); // 2 TBM head + 8 ROC head + 8*2 pix + 2 TBM trail
 
@@ -10124,12 +10124,12 @@ CMD_PROC( modtrimbits ) // pgt
 
   do {
 
-    unsigned int nev[nChannels] = {  };
+    unsigned int nev[8] = {  };
     unsigned int ndq = 0;
     unsigned int got = 0;
     unsigned int rst = 0;
     unsigned int npx = 0;
-    unsigned int nrr[nChannels] = {  };
+    unsigned int nrr[8] = {  };
 
     int PX[16] = { 0 };
     int ER[16] = { 0 };
@@ -10169,7 +10169,7 @@ CMD_PROC( modtrimbits ) // pgt
 
       tb.Pg_Stop(); // stop triggers, necessary for clean data
 
-      vector <uint16_t > data[nChannels];
+      vector <uint16_t > data[8];
 
       for( int ch = 0; ch < nChannels; ++ch ) {
 
@@ -10621,7 +10621,7 @@ CMD_PROC( modnoise )
 
   do {
 
-    unsigned int nev[nChannels] = {  };
+    unsigned int nev[8] = {  };
     unsigned int ndq = 0;
     unsigned int got = 0;
     unsigned int rst = 0;
@@ -10666,7 +10666,7 @@ CMD_PROC( modnoise )
 
       tb.Pg_Stop(); // stop triggers, necessary for clean data
 
-      vector <uint16_t > data[nChannels];
+      vector <uint16_t > data[8];
 
       for( int ch = 0; ch < nChannels; ++ch ) {
 
@@ -11899,7 +11899,7 @@ void ModPixelAlive( int nTrig )
 
   //flags |= 0x0100; // FLAG_FORCE_UNMASKED: noisy
 
-  vector <uint16_t > data[nChannels];
+  vector <uint16_t > data[8];
   // 28 = 2 TBM head + 8 ROC head + 8*2 pix + 2 TBM trail
   for( int ch = 0; ch < nChannels; ++ch )
     data[ch].reserve( nTrig * 4160 * 28 );
