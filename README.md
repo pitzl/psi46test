@@ -157,8 +157,8 @@ sudo make install
 Documentation:
 --------------
 
-man.pdf  
-man.tex (pdflatex, created by LYX)
+manual/man.pdf  
+manual/man.tex (pdflatex, created by LYX)
 
 
 Code style:
