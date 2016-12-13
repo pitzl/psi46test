@@ -2,12 +2,12 @@
 <!--- markdown file, gets converted into html,
       see http://en.wikipedia.org/wiki/Markdown) -->
 
-psi46testDesy
-=============
+psi46test
+=========
 
-code for testing psi46dig ROCs with a DTB.
-DESY development branched off from
-https://github.com/psi46/psi46test
+code for testing CMS pixel digital ROCs and modules with a DTB.
+based on https://github.com/psi46/psi46test (ROC testing)
+extended with ROOT and for module testing
 
 Prerequisites:
 --------------
