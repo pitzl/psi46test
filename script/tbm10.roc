@@ -29,6 +29,6 @@ tbmset $FA b11100100  pXar
 tbmset $EC 99         Auto reset rate (x+1)*256
 tbmset $FC 99
 
-tbmset $EE b00001000  00 + 3 + 3 = 160 + 400 MHz phase adjust  pXar
+tbmset $EE b00001000  3 + 3 + 00 = 160 + 400 MHz phase adjust  pXar
 
 tbmset $FE $00        Temp measurement control

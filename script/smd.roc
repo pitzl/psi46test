@@ -69,11 +69,7 @@ tbmset $FC 9
 tbmset $EA b00000000  delay_TBM_Hdr/Trl  delay_ROC_port1  delay_ROC_port0
 tbmset $FA b00000000  OK, but extra data after ROC 7, 15
 
-
-#tbmset $EE b00000000  160/400 MHz phase adjust  OK
-tbmset $EE b00100000  160/400 MHz phase adjust  OK, also cold
-#tbmset $EE b01000000  160/400 MHz phase adjust  some ROCs missing
-#tbmset $EE b10000000  160/400 MHz phase adjust  some ROCs missing
+tbmset $EE b00100000  3+3+00 = 160,400 MHz phase adjust  OK, also cold
 
 tbmset $FE $00        Temp measurement control
 

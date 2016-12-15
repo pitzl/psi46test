@@ -38,10 +38,10 @@ mdelay 200
 
 #modsel 7
 #modsel  9 # M4032
-modsel 17 # M4066
-#modsel 17
+#modsel 15
+#modsel 17 # M4066
 #modsel 20  # HubID 3229
-#modsel 22  # HubID M3200, 3262
+modsel 22  # HubID M3200, 3262
 #modsel 23  # HubID M3255
 #modsel 24  # HubID 3056
 #modsel 25  # HubID 3130
@@ -70,7 +70,7 @@ tbmset $EC 99         Auto reset rate (x+1)*256
 tbmset $FC 99
 
 #tbmset $EE b00100000  160/400 MHz phase adjust  OK, also cold
-tbmset $EE b00101101  3 + 3 = 160 + 400 MHz phase adjust  pXar
+tbmset $EE b00101101  3 + 3 + 00 = 160 + 400 MHz phase adjust  pXar
 #tbmset $EE b11101000  M3255 with mtp cable, 3056
 
 tbmset $FE $00        Temp measurement control

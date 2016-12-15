@@ -36,7 +36,8 @@ mdelay 200
 
 --- setup TBM09c: 2 cores at E and F
 
-modsel 31  # set default HubID
+#modsel 31  # set default HubID
+modsel 22 # L2o short
 #modsel 24  # M2229 HubID
 #modsel 24  # 
 
@@ -67,8 +68,7 @@ tbmset $FA b01101101  like 08c
 tbmset $EC 99         Auto reset rate (x+1)*256
 tbmset $FC 99
 
-#tbmset $EE b00101101  3 + 3 = 160 + 400 MHz phase adjust  08c
-tbmset $EE b00110100  3 + 3 = 160 + 400 MHz phase adjust  pXar
+tbmset $EE b00110100  3 + 3 + 00 = 160 + 400 MHz phase adjust  pXar
 
 tbmset $FE $00        Temp measurement control
 
