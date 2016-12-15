@@ -17006,7 +17006,7 @@ CMD_PROC( mt ) // module test
 
   int layer;
   if( !PAR_IS_INT( layer, 1, 4 ) )
-    layer = 1; // default
+    layer = 4; // default
 
   int BB; // flag for bump bond test (90s)
   if( !PAR_IS_INT( BB, 0, 1 ) )
@@ -17155,7 +17155,7 @@ CMD_PROC( mt ) // module test
     tb.tbm_Set( 0xEA, 0b11100100 ); // 1+1+3+3 = del_tin  del_Hdr/Trl  del_port1  del_port0   4- 7
     tb.tbm_Set( 0xFA, 0b11100100 ); // 1+1+3+3 = del_tin  del_Hdr/Trl  del_port3  del_port2   8-11
 
-    tb.tbm_Set( 0xEE, 0b00001000 ); // 00+3+3 = 160 + 400 MHz phase
+    tb.tbm_Set( 0xEE, 0b00001000 ); // 3+3+00 = 160 + 400 MHz phase
 
     tb.tbm_Set( 0xFE, 0 ); // Temp measurement control
   }
