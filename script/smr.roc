@@ -22,10 +22,10 @@ ctr  4  (CLK +  0)
 sda 19  (CLK + 15)
 tin  9  (CLK +  5)
 
-clklvl  13  # for DESY module with TBM08b and KIT adapter
-ctrlvl  13  # 15 OK, 12 OK, 8 OK, 5 ineff
-sdalvl  13  # D4020 in A needs 12
-tinlvl  13
+clklvl  15  # 13 for DESY module with TBM08b and KIT adapter
+ctrlvl  15  # 15 OK, 12 OK, 8 OK, 5 ineff
+sdalvl  15  # D4020 in A needs 12
+tinlvl  15
 
 --- power on --------------------------------
 pon
@@ -36,17 +36,10 @@ mdelay 200
 
 --- setup TBM08ab: 2 cores at E and F
 
-#modsel 7
-#modsel  9 # M4032
-#modsel 15
-#modsel 17 # M4066
-#modsel 20  # HubID 3229
-modsel 22  # HubID M3200, 3262
-#modsel 23  # HubID M3255
-#modsel 24  # HubID 3056
-#modsel 25  # HubID 3130
-#modsel 26  # HubID 20 +2
-#modsel 27  # HubID 20 +1
+#modsel 4
+#modsel 11
+modsel 28
+#modsel 30
 #modsel 31 # default hubID
 
 tbmset $E4 b11110000  Init TBM
@@ -140,9 +133,9 @@ a1 1  sdata # 400 MHz
 - pixel_dtb.h:	#define PG_REST  0x1000 // TBM reset
 
 pgstop
-pgset 0 b011000  16  pg_rest pg_resr  (reset TBM and ROCs)
+pgset 0 b111000  16 sync  pg_rest pg_resr  (reset TBM and ROCs)
 pgset 1 b000100 106  pg_cal (WBC + 6 for digV2)
-pgset 2 b100010   0  pg_trg pg_sync. (delay zero = end of pgset)
+pgset 2 b000010   0  pg_trg (delay zero = end of pgset)
 
 #trigdel 200  # delay in trigger loop 200 BC =  5 us
 trigdel 400  # delay in trigger loop 400 BC = 10 us for large events

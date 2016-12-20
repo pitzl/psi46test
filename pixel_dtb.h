@@ -350,8 +350,8 @@ class CTestboard
   // --- analog signal probe ----------------------------------------------
 
 #define PROBEA_TIN     0
-#define PROBEA_SDATA1  1 // analog ROC
-#define PROBEA_SDATA2  2
+#define PROBEA_SDATA1  1 // ROC or TBM data
+#define PROBEA_SDATA2  2 // layer 2 TBM
 #define PROBEA_CTR     3
 #define PROBEA_CLK     4
 #define PROBEA_SDA     5

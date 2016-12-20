@@ -4649,7 +4649,6 @@ CMD_PROC( showclk )
   const int gain = 1;
   // PAR_INT( gain, 1, 4 );
 
-  unsigned int i, k;
   vector < uint16_t > data[20];
 
   tb.Pg_Stop();
@@ -4673,7 +4672,7 @@ CMD_PROC( showclk )
 #ifdef DAQOPENCLOSE
   tb.Daq_Open( Blocksize );
 #endif
-  for( i = 0; i < 20; ++i ) {
+  for( int i = 0; i < 20; ++i ) {
     tb.Sig_SetDelay( SIG_CLK, 26 - i );
     tb.uDelay( 10 );
     tb.Daq_Start();
@@ -4688,6 +4687,8 @@ CMD_PROC( showclk )
     //cout << 26-i << "  " << data[i].size() << endl;
   }
 
+  tb.Sig_SetDelay( SIG_CLK, tbState.GetClockPhase(  ) );
+
 #ifdef DAQOPENCLOSE
   tb.Daq_Close();
 #endif
@@ -4696,8 +4697,8 @@ CMD_PROC( showclk )
   int n = 20 * nSamples;
   vector < double > values( n );
   int x = 0;
-  for( k = 0; k < nSamples; ++k ) {
-    for( i = 0; i < 20; ++i ) {
+  for( unsigned int k = 0; k < nSamples; ++k ) {
+    for( int i = 0; i < 20; ++i ) {
       int y = ( data[i] )[k] & 0x0fff;
       if( y & 0x0800 )
         y |= 0xfffff000;
@@ -4720,7 +4721,6 @@ CMD_PROC( showctr )
   const int gain = 1;
   // PAR_INT( gain, 1, 4 );
 
-  unsigned int i, k;
   vector < uint16_t > data[20];
 
   tb.Pg_Stop();
@@ -4744,7 +4744,7 @@ CMD_PROC( showctr )
 #ifdef DAQOPENCLOSE
   tb.Daq_Open( Blocksize );
 #endif
-  for( i = 0; i < 20; ++i ) {
+  for( int i = 0; i < 20; ++i ) {
     tb.Sig_SetDelay( SIG_CTR, 26 - i );
     tb.uDelay( 10 );
     tb.Daq_Start();
@@ -4757,6 +4757,7 @@ CMD_PROC( showctr )
       return true;
     }
   }
+  tb.Sig_SetDelay( SIG_CTR, tbState.GetClockPhase(  ) );
 #ifdef DAQOPENCLOSE
   tb.Daq_Close();
 #endif
@@ -4765,8 +4766,8 @@ CMD_PROC( showctr )
   int n = 20 * nSamples;
   vector < double > values( n );
   int x = 0;
-  for( k = 0; k < nSamples; ++k ) {
-    for( i = 0; i < 20; ++i ) {
+  for( unsigned int k = 0; k < nSamples; ++k ) {
+    for( int i = 0; i < 20; ++i ) {
       int y = ( data[i] )[k] & 0x0fff;
       if( y & 0x0800 )
         y |= 0xfffff000;
@@ -4799,7 +4800,6 @@ CMD_PROC( showsda )
 {
   int dummy; if( !PAR_IS_INT( dummy, 0, 1 ) ) dummy = 80;
   const unsigned int nSamples = 52;
-  unsigned int i, k;
   vector < uint16_t > data[20];
 
   tb.SignalProbeD1( 9 );
@@ -4814,7 +4814,7 @@ CMD_PROC( showsda )
 #ifdef DAQOPENCLOSE
   tb.Daq_Open( Blocksize );
 #endif
-  for( i = 0; i < 20; ++i ) {
+  for( int i = 0; i < 20; ++i ) {
     tb.Sig_SetDelay( SIG_SDA, 26 - i );
     tb.uDelay( 10 );
     tb.Daq_Start();
@@ -4827,6 +4827,7 @@ CMD_PROC( showsda )
       return true;
     }
   }
+  tb.Sig_SetDelay( SIG_SDA, tbState.GetClockPhase(  ) + 15 );
 #ifdef DAQOPENCLOSE
   tb.Daq_Close();
 #endif
@@ -4835,11 +4836,11 @@ CMD_PROC( showsda )
   int n = 20 * nSamples;
   vector < double > values( n );
   int x = 0;
-  for( k = 0; k < nSamples; ++k ) {
-    for( i = 0; i < 20; ++i ) {
+  for( unsigned int k = 0; k < nSamples; ++k ) {
+    for( int i = 0; i < 20; ++i ) {
       int y = ( data[i] )[k] & 0x0fff;
-      if( y & 0x0800 )
-        y |= 0xfffff000;
+      if( y & 0x0800 ) // sign
+        y |= 0xfffff000; // complement?
       values[x++] = y;
       cout << setw(5) << y;
     }
@@ -4849,6 +4850,124 @@ CMD_PROC( showsda )
   //Scope( "SDA", values);
 
   return true;
+}
+
+//------------------------------------------------------------------------------
+bool GetSdata( int ch, int nSamples, int gain )
+{
+  Log.section( "SDATA" );
+
+  tb.SignalProbeADC( ch, gain ); // SDATA1 to FPGA ADC
+
+  int source = 1; // pg_sync
+  uint8_t start  = 1;  // wait
+  tb.Daq_Select_ADC( nSamples, source, start );
+
+  tb.uDelay( 1000 );
+
+#ifdef DAQOPENCLOSE
+  tb.Daq_Open( Blocksize );
+#endif
+  tb.Flush();
+
+  // FPGA has 40 MHz ADC
+  // need to make a phase scan to catch the full signal shape
+
+  int ymax = 0; // expect positive
+  int ymin = 0; // expect negative
+
+  if( h11 )
+    delete h11;
+  h11 = new
+    TProfile( "sdata_vs_CTR_delay",
+	      "Sdata vs CTR delay;CTR delay [ns];<differential Sdata> [ADC]",
+	      25, 0, 25 );
+  if( h12 )
+    delete h12;
+  h12 = new
+    TH1D( "sdata",
+          "differential Sdata;differential Sdata [ADC];samples",
+	  2048, -1024, 1024 );
+
+  for( int i = 0; i < 25; ++i ) {
+
+    cout << endl << "CTR delay " << i << endl;
+    tb.Sig_SetDelay( SIG_CTR, i );
+
+    tb.uDelay( 10 );
+    tb.Daq_Start();
+    tb.Pg_Single();
+    tb.uDelay( 1000 );
+    tb.Daq_Stop();
+
+    vector < uint16_t > data;
+    tb.Daq_Read( data, Blocksize );
+
+    cout << "data size " << data.size() << ":" << endl;
+    if( (int) data.size() != nSamples )
+      cout << "no data" << endl;
+    else {
+      for( int k = 0; k < nSamples; ++k ) {
+	int y = data.at(k) & 0x0fff; // 12 bit
+	if( y & 0x0800 ) // sign
+	  y |= 0xfffff000; // complement?
+	cout << setw(5) << y;
+	h11->Fill( i+0.5, y );
+	h12->Fill(y);
+	if( y > ymax ) ymax = y;
+	if( y < ymin ) ymin = y;
+      }
+      cout << endl;
+      cout << "min " << setw(5) << ymin << endl;
+      cout << "max " << setw(5) << ymax << endl;
+    }
+  } // delay
+
+  Log.printf( "   min %5i ADC\n", ymin );
+  Log.printf( "   max %5i ADC\n", ymax );
+
+  tb.Sig_SetDelay( SIG_CTR, tbState.GetClockPhase(  ) );
+  int nrocs = 0;
+  for( int iroc = 0; iroc < 16; ++iroc )
+    if( roclist[iroc] )
+      ++nrocs;
+  if( nrocs > 1 )
+    tb.Daq_Select_Deser400();
+  else
+    tb.Daq_Select_Deser160( tbState.GetDeserPhase() ); // back to default
+
+#ifdef DAQOPENCLOSE
+  tb.Daq_Close();
+#endif
+  tb.Flush();
+
+  h11->Write();
+  h12->Write();
+  h11->Draw(  );
+  c1->Update();
+  cout << "histos 11, 12" << endl;
+
+  return true;
+
+} // sdata
+
+//------------------------------------------------------------------------------
+CMD_PROC( sdata )
+{
+  int ch;
+  if( !PAR_IS_INT( ch, 1, 2 ) )
+    ch = 1;
+
+  int nSamples;
+  if( !PAR_IS_INT( nSamples, 1, 999 ) )
+    nSamples = 100;
+
+  int gain;
+  if( !PAR_IS_INT( gain, 1, 4 ) )
+    gain = 1;
+
+  return GetSdata( ch, nSamples, gain );
+  
 }
 
 //------------------------------------------------------------------------------
@@ -17006,7 +17125,7 @@ CMD_PROC( mt ) // module test
 
   int layer;
   if( !PAR_IS_INT( layer, 1, 4 ) )
-    layer = 4; // default
+    layer = 3; // default
 
   int BB; // flag for bump bond test (90s)
   if( !PAR_IS_INT( BB, 0, 1 ) )
@@ -17087,6 +17206,7 @@ CMD_PROC( mt ) // module test
     Log.printf( "[POFF]\n" );
     cout << "low voltage power off" << endl;
     cout << "exit or quit to close the ROOT file and the DTB" << endl;
+    Log.flush();
     return 0;
   }
 
@@ -17362,6 +17482,7 @@ CMD_PROC( mt ) // module test
     Log.printf( "[POFF]\n" );
     cout << "low voltage power off" << endl;
     cout << "exit or quit to close the ROOT file and the DTB" << endl;
+    Log.flush();
     return 0;
   }
 
@@ -17376,7 +17497,7 @@ CMD_PROC( mt ) // module test
   int delay = 16; // [BC]
   tb.Pg_SetCmd( ipos++, ( bits << 8 ) + delay );
 
-  bits = 0b000100; // cal
+  bits = 0b100100; // sync, cal
   delay = 106; // WBC + 6 for respin
   tb.Pg_SetCmd( ipos++, ( bits << 8 ) + delay );
 
@@ -17412,6 +17533,7 @@ CMD_PROC( mt ) // module test
       Log.printf( "[POFF]\n" );
       cout << "low voltage power off" << endl;
       cout << "exit or quit to close the ROOT file and the DTB" << endl;
+      Log.flush();
       return 0;
     }
 
@@ -17438,10 +17560,20 @@ CMD_PROC( mt ) // module test
       Log.printf( "[POFF]\n" );
       cout << "low voltage power off" << endl;
       cout << "exit or quit to close the ROOT file and the DTB" << endl;
+      Log.flush();
       return 0;
     }
 
   } // BB wanted
+
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // measure Sdata levels:
+
+  int ch = 1; // SDATA1
+  int nSamples = 100;
+  int gain = 1;
+
+  bool ok = GetSdata( ch, nSamples, gain );
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // caldel at large Vcal:
@@ -17480,7 +17612,7 @@ CMD_PROC( mt ) // module test
   } // rocs
 
   cout << endl;
-  bool ok = 1;
+  ok = 1;
   for( int roc = 0; roc < 16; ++roc ) {
     cout << setw( 2 ) << roc << " CalDel " << setw( 3 ) << dacval[roc][CalDel]
 	 << " plateau height " << mm[roc]
@@ -17502,6 +17634,7 @@ CMD_PROC( mt ) // module test
     Log.printf( "[POFF]\n" );
     cout << "low voltage power off" << endl;
     cout << "exit or quit to close the ROOT file and the DTB" << endl;
+    Log.flush();
     return 0;
   }
 
@@ -17544,6 +17677,7 @@ CMD_PROC( mt ) // module test
   cout << "total test duration " << s9 - s0 + ( u9 - u0 ) * 1e-6 << " s" << endl;
   cout << "exit or quit to close the ROOT file and the DTB" << endl;
 
+  Log.flush();
   return ok;
 
 } // mt
@@ -17677,6 +17811,7 @@ void cmd()                    // called once from psi46test
   CMD_REG( showclk,   "showclk                       show CLK signal" );
   CMD_REG( showctr,   "showctr                       show CTR signal" );
   CMD_REG( showsda,   "showsda                       show SDA signal" );
+  CMD_REG( sdata,     "sdata [n]                     show SDATA signal" );
 
   CMD_REG( tbmdis,    "tbmdis                        disable TBM" );
   CMD_REG( tbmsel,    "tbmsel <hub> <port>           set hub and port address, port 6=all" );
