@@ -4855,7 +4855,8 @@ CMD_PROC( showsda )
 //------------------------------------------------------------------------------
 bool GetSdata( int ch, int nSamples, int gain )
 {
-  Log.section( "SDATA" );
+  Log.section( "SDATA", false );
+  Log.printf( " ch %i\n", ch );
 
   tb.SignalProbeADC( ch, gain ); // SDATA1 to FPGA ADC
 
@@ -4879,14 +4880,14 @@ bool GetSdata( int ch, int nSamples, int gain )
   if( h11 )
     delete h11;
   h11 = new
-    TProfile( "sdata_vs_CTR_delay",
-	      "Sdata vs CTR delay;CTR delay [ns];<differential Sdata> [ADC]",
+    TProfile( Form( "sdata%i_vs_CTR_delay", ch ),
+	      Form( "Sdata ch %i vs CTR delay;CTR delay [ns];<differential Sdata> [ADC]", ch ),
 	      25, 0, 25 );
   if( h12 )
     delete h12;
   h12 = new
-    TH1D( "sdata",
-          "differential Sdata;differential Sdata [ADC];samples",
+    TH1D( Form( "sdata%i", ch ),
+          Form( "differential Sdata ch %i;differential Sdata [ADC];samples", ch ),
 	  2048, -1024, 1024 );
 
   for( int i = 0; i < 25; ++i ) {
@@ -4926,7 +4927,10 @@ bool GetSdata( int ch, int nSamples, int gain )
   Log.printf( "   min %5i ADC\n", ymin );
   Log.printf( "   max %5i ADC\n", ymax );
 
+  // back to default:
+
   tb.Sig_SetDelay( SIG_CTR, tbState.GetClockPhase(  ) );
+
   int nrocs = 0;
   for( int iroc = 0; iroc < 16; ++iroc )
     if( roclist[iroc] )
@@ -17125,7 +17129,7 @@ CMD_PROC( mt ) // module test
 
   int layer;
   if( !PAR_IS_INT( layer, 1, 4 ) )
-    layer = 3; // default
+    layer = 1; // default
 
   int BB; // flag for bump bond test (90s)
   if( !PAR_IS_INT( BB, 0, 1 ) )
@@ -17574,6 +17578,9 @@ CMD_PROC( mt ) // module test
   int gain = 1;
 
   bool ok = GetSdata( ch, nSamples, gain );
+
+  if( layer < 3 )
+    ok = GetSdata( 2, nSamples, gain );
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // caldel at large Vcal:
